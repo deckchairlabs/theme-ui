@@ -1,11 +1,13 @@
 import {
   jsx as emotion,
   ThemeContext as EmotionContext,
+  CacheProvider,
   InterpolationWithTheme,
 } from '@emotion/core'
+import createCache, { Options as CacheOptions } from '@emotion/cache'
 // @ts-ignore
 import { css, Theme } from '@theme-ui/css'
-import React from 'react'
+import React, { useMemo } from 'react'
 import deepmerge from 'deepmerge'
 import { version as __EMOTION_VERSION__ } from '@emotion/core/package.json'
 
@@ -85,11 +87,19 @@ const BaseProvider: React.FC<BaseProviderProps> = ({ context, children }) =>
 
 export interface ThemeProviderProps {
   theme: Partial<Theme> | ((outerTheme: Theme) => Theme)
+  cacheOptions?: CacheOptions
   children?: React.ReactNode
 }
 
-export function ThemeProvider({ theme, children }: ThemeProviderProps) {
+export function ThemeProvider({
+  theme,
+  children,
+  cacheOptions,
+}: ThemeProviderProps) {
   const outer = useThemeUI()
+  const cache = useMemo(() => {
+    return createCache(cacheOptions)
+  }, [cacheOptions])
 
   if (process.env.NODE_ENV !== 'production') {
     if (outer.__EMOTION_VERSION__ !== __EMOTION_VERSION__) {
@@ -106,5 +116,9 @@ export function ThemeProvider({ theme, children }: ThemeProviderProps) {
       ? { ...outer, theme: theme(outer.theme!) }
       : merge.all<ContextValue>({}, outer, { theme })
 
-  return jsx(BaseProvider, { context }, children)
+  return jsx(
+    CacheProvider,
+    { value: cache },
+    jsx(BaseProvider, { context }, children)
+  )
 }

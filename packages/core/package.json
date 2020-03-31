@@ -17,6 +17,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@emotion/cache": "^10.0.0",
     "@emotion/core": "^10.0.0",
     "@theme-ui/css": "^0.4.0-alpha.0",
     "deepmerge": "^4.2.2"
