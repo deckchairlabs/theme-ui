@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ThemeProvider can configure cacheOptions 1`] = `
+.emotion-0 {
+  color: tomato;
+}
+
+<div
+  className="emotion-0"
+/>
+`;
+
 exports[`ThemeProvider renders 1`] = `
 <h1>
   Hello
